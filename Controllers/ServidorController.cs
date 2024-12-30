@@ -18,6 +18,13 @@ namespace API_CredentialManager.Controllers
             _context = dbContext;
         }
 
+        // GET: api/Server
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Servidor>>> GetServers()
+        {
+            return await _context.Servidores.ToListAsync();
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Servidor>> GetServidor(int id)
         {
