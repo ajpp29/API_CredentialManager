@@ -11,7 +11,9 @@ namespace API_CredentialManager.Models
         private int _id;
         private string _nombre;
         private string _ip;
-        private string _fecCreacion;
+        private DateTime _fecCreacion;
+        private string _usrModificacion;
+        private DateTime _fecModificacion;
         private bool _activo;
 
         [Key]
@@ -37,11 +39,25 @@ namespace API_CredentialManager.Models
         }
 
         [Column("Fec_Creacion")]
-        public string FecCreacion
+        public DateTime FecCreacion
         {
             get { return _fecCreacion; }
             set { _fecCreacion = value; }
         }
+
+        [Column("Usr_Modificacion")]
+        public string UserModificacion
+        {
+            get { return _usrModificacion; }
+            set { _usrModificacion = value; }
+        }
+
+        [Column("Fec_Modificacion")]
+        public DateTime FecModificacion
+        {
+            get { return _fecModificacion; }
+            set { _fecModificacion = value; }
+        }     
 
         [Column("Activo")]
         public bool Activo

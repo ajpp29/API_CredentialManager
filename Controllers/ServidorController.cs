@@ -19,13 +19,23 @@ namespace API_CredentialManager.Controllers
         }
 
         // GET: api/Server
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Servidor>>> GetServers()
+        [HttpGet("ObtenerServidores")]
+        public async Task<ActionResult<IEnumerable<Servidor>>> obtenerServidores()
         {
             return await _context.Servidores.ToListAsync();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("ObtenerServidoresActivos")]
+        public async Task<ActionResult<List<Servidor>>> obtenerServidoresActivos()
+        {
+            var Servidores = await _context.Servidores
+                                .Where(e => e.Activo == true)
+                                .ToListAsync();
+
+            return Servidores;
+        }
+
+        [HttpGet("ObtenerServidor/{id}")]
         public async Task<ActionResult<Servidor>> GetServidor(int id)
         {
             var Servidor = await _context.Servidores
