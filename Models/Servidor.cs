@@ -5,16 +5,24 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace API_CredentialManager.Models
 {
     [Table("SERVIDOR", Schema = "dbo")]
-    [PrimaryKey(nameof(ID))]
+    //[PrimaryKey(nameof(ID))]
     public class Servidor
     {
         private int _id;
         private string _nombre;
         private string _ip;
-        private DateTime _fecCreacion;
-        private string _usrModificacion;
-        private DateTime _fecModificacion;
+        private DateTime _fechaCreacion;
+        private string _usuarioModificacion;
+        private DateTime _fechaModificacion;
         private bool _activo;
+
+        public Servidor()
+        {
+            _fechaCreacion = System.DateTime.Now;
+            _fechaModificacion = System.DateTime.Now;
+            _activo = true;
+            _usuarioModificacion = String.Empty;
+        }
 
         [Key]
         [Column("ServidorID", Order = 0)]
@@ -24,6 +32,7 @@ namespace API_CredentialManager.Models
             set { _id = value; }
         }
 
+        [Required]
         [Column("Servidor")]
         public string Nombre
         {
@@ -31,6 +40,7 @@ namespace API_CredentialManager.Models
             set { _nombre = value; }
         }
 
+        [Required]
         [Column("ServidorIP")]
         public string IP
         {
@@ -39,24 +49,24 @@ namespace API_CredentialManager.Models
         }
 
         [Column("Fec_Creacion")]
-        public DateTime FecCreacion
+        public DateTime FechaCreacion
         {
-            get { return _fecCreacion; }
-            set { _fecCreacion = value; }
+            get { return _fechaCreacion; }
+            set { _fechaCreacion = value; }
         }
 
         [Column("Usr_Modificacion")]
-        public string UserModificacion
+        public string UsuarioModificacion
         {
-            get { return _usrModificacion; }
-            set { _usrModificacion = value; }
+            get { return _usuarioModificacion; }
+            set { _usuarioModificacion = value; }
         }
 
         [Column("Fec_Modificacion")]
-        public DateTime FecModificacion
+        public DateTime FechaModificacion
         {
-            get { return _fecModificacion; }
-            set { _fecModificacion = value; }
+            get { return _fechaModificacion; }
+            set { _fechaModificacion = value; }
         }     
 
         [Column("Activo")]
