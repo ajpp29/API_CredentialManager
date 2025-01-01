@@ -11,5 +11,6 @@ namespace API_CredentialManager.Data
         // public DbSet<Estudiante> Estudiantes { get; set; }
 
         public DbSet<Servidor> Servidores { get; set; }
+        public DbSet<Usuario> Usuarios { get; set; }
     }
 }
