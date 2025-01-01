@@ -183,19 +183,117 @@ namespace API_CredentialManager.Controllers
                 }
                 else
                 {
-                    usuario.UsuarioModificacion = _usuarioModificacion;
-                    usuario.crearKey();
-                    usuario.encriptarClave();
+                    if (usuario.Clave.Equals(String.Empty))
+                    {
+                        mensaje = "La clave es requerida";
+                        codigo = StatusCodes.Status400BadRequest;
+                        respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                    }
+                    else
+                    {
+                        usuario.UsuarioModificacion = _usuarioModificacion;
+                        usuario.crearKey();
+                        usuario.encriptarClave();
 
-                    _context.Usuarios.Add(usuario);
-                    await _context.SaveChangesAsync();
+                        _context.Usuarios.Add(usuario);
+                        await _context.SaveChangesAsync();
 
-                    usuario.ocultarClave();
-                    usuario.ocultarKey();
+                        usuario.ocultarClave();
+                        usuario.ocultarKey();
 
-                    mensaje = "Usuario creado";
-                    codigo = StatusCodes.Status201Created;
-                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                        mensaje = "Usuario creado";
+                        codigo = StatusCodes.Status201Created;
+                        respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                mensaje = e.Message;
+                codigo = StatusCodes.Status500InternalServerError;
+                respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+            }
+
+            return respuesta;
+        }
+
+        // Actualizar un usuario
+        [HttpPut("ActualizarUsuario/{id}")]
+        public async Task<ActionResult<Respuesta<Usuario>>> actualizarUsuario(int id, Usuario usuario)
+        {
+            Respuesta<Usuario> respuesta;
+            string mensaje;
+            int codigo;
+            string _usuarioModificacion = "UsuarioPrueba";
+
+            try
+            {
+                if (id != usuario.ID)
+                {
+                    mensaje = "El ID no coincide con el usuario";
+                    codigo = StatusCodes.Status400BadRequest;
+                    respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                }
+                else
+                {
+
+                    var usuarioActual = await _context.Usuarios
+                                    .Where(e => e.ID == id && e.Nombre == usuario.Nombre)
+                                    .FirstOrDefaultAsync();
+
+                    if (usuarioActual != null)
+                    {
+                        // Verificar si el nombre de usuario ya existe
+                        var usuarioConNombre = await _context.Usuarios
+                                                .Where(e => e.Nombre == usuario.Nombre && e.ID != id)
+                                                .FirstOrDefaultAsync();
+
+                        var usuarioConCorreo = await _context.Usuarios
+                                                .Where(e => e.Correo == usuario.Correo && e.ID != id)
+                                                .FirstOrDefaultAsync();
+
+                        if (usuarioConNombre != null && usuarioConCorreo != null)
+                        {
+                            mensaje = "El nombre de usuario y el correo ya están registrados.";
+                            codigo = StatusCodes.Status400BadRequest;
+                            respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                        }
+                        else if (usuarioConNombre != null)
+                        {
+                            mensaje = "El nombre de usuario ya está registrado.";
+                            codigo = StatusCodes.Status400BadRequest;
+                            respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                        }
+                        else if (usuarioConCorreo != null)
+                        {
+                            mensaje = "El correo ya está registrado.";
+                            codigo = StatusCodes.Status400BadRequest;
+                            respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                        }
+                        else
+                        {
+                            //usuarioActual.Nombre = usuario.Nombre;
+                            usuarioActual.Correo = usuario.Correo;
+                            usuarioActual.UsuarioModificacion = _usuarioModificacion;
+                            usuarioActual.FechaModificacion = System.DateTime.Now;
+
+                            _context.Usuarios.Update(usuarioActual);
+                            await _context.SaveChangesAsync();
+
+                            usuarioActual.ocultarClave();
+                            usuarioActual.ocultarKey();
+
+                            mensaje = "Usuario actualizado";
+                            codigo = StatusCodes.Status200OK;
+                            respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuarioActual);
+                        }
+                    }
+                    else
+                    {
+                        mensaje = "No se encontró el usuario";
+                        codigo = StatusCodes.Status404NotFound;
+                        respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                    }
                 }
             }
             catch (Exception e)

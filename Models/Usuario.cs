@@ -20,6 +20,7 @@ namespace API_CredentialManager.Models
 
         public Usuario()
         {
+            _clave = string.Empty;
             _key = string.Empty;
             _fechaCreacion = System.DateTime.Now;
             _usuarioModificacion = string.Empty;
@@ -51,7 +52,6 @@ namespace API_CredentialManager.Models
             set { _correo = value; }
         }
 
-        [Required]
         [Column("Clave")]
         public string Clave
         {

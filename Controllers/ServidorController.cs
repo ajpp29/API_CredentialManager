@@ -195,7 +195,7 @@ namespace API_CredentialManager.Controllers
                 else
                 {
                     var existeServidor = await _context.Servidores
-                                            .Where(e => e.ID == id)
+                                            .Where(e => e.ID == id && e.Nombre == servidor.Nombre)
                                             .FirstOrDefaultAsync();
 
                     if (existeServidor == null)
@@ -206,7 +206,7 @@ namespace API_CredentialManager.Controllers
                     }
                     else
                     {
-                        existeServidor.Nombre = servidor.Nombre;
+                        //existeServidor.Nombre = servidor.Nombre;
                         existeServidor.IP = servidor.IP;
                         existeServidor.UsuarioModificacion = _usuarioModificacion;
                         existeServidor.FechaModificacion = System.DateTime.Now;
@@ -216,7 +216,7 @@ namespace API_CredentialManager.Controllers
 
                         mensaje = "Servidor actualizado";
                         codigo = StatusCodes.Status200OK;
-                        respuesta = new Respuesta<Servidor>(codigo, true, mensaje, servidor);
+                        respuesta = new Respuesta<Servidor>(codigo, true, mensaje, existeServidor);
                     }
                 }
             }
