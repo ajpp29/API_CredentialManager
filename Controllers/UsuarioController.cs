@@ -120,6 +120,7 @@ namespace API_CredentialManager.Controllers
                 if (usuario != null)
                 {
                     usuario.ocultarClave();
+                    usuario.ocultarKey();
 
                     mensaje = "Se encontró el usuario";
                     codigo = StatusCodes.Status200OK;
@@ -189,9 +190,108 @@ namespace API_CredentialManager.Controllers
                     _context.Usuarios.Add(usuario);
                     await _context.SaveChangesAsync();
 
+                    usuario.ocultarClave();
+                    usuario.ocultarKey();
+
                     mensaje = "Usuario creado";
                     codigo = StatusCodes.Status201Created;
                     respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                }
+            }
+            catch (Exception e)
+            {
+                mensaje = e.Message;
+                codigo = StatusCodes.Status500InternalServerError;
+                respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+            }
+
+            return respuesta;
+        }
+
+        // Activar un usuario
+        [HttpPut("ActivarUsuario/{id}")]
+        public async Task<ActionResult<Respuesta<Usuario>>> activarUsuario(int id)
+        {
+            Respuesta<Usuario> respuesta;
+            string mensaje;
+            int codigo;
+            string _usuarioModificacion = "UsuarioPrueba";
+
+            try
+            {
+                var usuario = await _context.Usuarios
+                                .Where(e => e.ID == id)
+                                .FirstOrDefaultAsync();
+
+                if (usuario != null)
+                {
+                    usuario.Activo = true;
+                    usuario.UsuarioModificacion = _usuarioModificacion;
+                    usuario.FechaModificacion = System.DateTime.Now;
+
+                    _context.Usuarios.Update(usuario);
+                    await _context.SaveChangesAsync();
+
+                    usuario.ocultarClave();
+                    usuario.ocultarKey();
+
+                    mensaje = "Usuario activado";
+                    codigo = StatusCodes.Status200OK;
+                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                }
+                else
+                {
+                    mensaje = "No se encontró el usuario";
+                    codigo = StatusCodes.Status404NotFound;
+                    respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+                }
+            }
+            catch (Exception e)
+            {
+                mensaje = e.Message;
+                codigo = StatusCodes.Status500InternalServerError;
+                respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
+            }
+
+            return respuesta;
+        }
+
+        // Desactivar un usuario
+        [HttpPut("DesactivarUsuario/{id}")]
+        public async Task<ActionResult<Respuesta<Usuario>>> desactivarUsuario(int id)
+        {
+            Respuesta<Usuario> respuesta;
+            string mensaje;
+            int codigo;
+            string _usuarioModificacion = "UsuarioPrueba";
+
+            try
+            {
+                var usuario = await _context.Usuarios
+                                .Where(e => e.ID == id)
+                                .FirstOrDefaultAsync();
+
+                if (usuario != null)
+                {
+                    usuario.Activo = false;
+                    usuario.UsuarioModificacion = _usuarioModificacion;
+                    usuario.FechaModificacion = System.DateTime.Now;
+
+                    _context.Usuarios.Update(usuario);
+                    await _context.SaveChangesAsync();
+
+                    usuario.ocultarClave();
+                    usuario.ocultarKey();
+
+                    mensaje = "Usuario desactivado";
+                    codigo = StatusCodes.Status200OK;
+                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                }
+                else
+                {
+                    mensaje = "No se encontró el usuario";
+                    codigo = StatusCodes.Status404NotFound;
+                    respuesta = new Respuesta<Usuario>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
