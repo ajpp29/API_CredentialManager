@@ -94,7 +94,7 @@ namespace API_CredentialManager.Controllers
 
         // Obtener un servidor por ID
         [HttpGet("ObtenerServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> GetServidor(int id)
+        public async Task<ActionResult<Respuesta<Servidor>>> obtenerServidor(int id)
         {
             Respuesta<Servidor> respuesta;
             string mensaje;
@@ -131,11 +131,12 @@ namespace API_CredentialManager.Controllers
 
         // Crear un servidor
         [HttpPost("CrearServidor")]
-        public async Task<ActionResult<Respuesta<Servidor>>> CrearServidor(Servidor servidor)
+        public async Task<ActionResult<Respuesta<Servidor>>> crearServidor(Servidor servidor)
         {
             Respuesta<Servidor> respuesta;
             string mensaje;
             int codigo;
+            string _usuarioModificacion = "UsuarioPrueba";
 
             try
             {
@@ -152,7 +153,9 @@ namespace API_CredentialManager.Controllers
                 }
                 else
                 {
-                    await _context.AddAsync(servidor);
+                    servidor.UsuarioModificacion = _usuarioModificacion;
+
+                    _context.Servidores.Add(servidor);
                     await _context.SaveChangesAsync();
 
                     mensaje = "Servidor creado";
@@ -174,7 +177,7 @@ namespace API_CredentialManager.Controllers
 
         // Actualizar un servidor
         [HttpPut("ActualizarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> ActualizarServidor(int id, Servidor servidor)
+        public async Task<ActionResult<Respuesta<Servidor>>> actualizarServidor(int id, Servidor servidor)
         {
             Respuesta<Servidor> respuesta;
             string mensaje;
@@ -229,7 +232,7 @@ namespace API_CredentialManager.Controllers
 
         // Activar un servidor
         [HttpPut("ActivarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> ActivarServidor(int id)
+        public async Task<ActionResult<Respuesta<Servidor>>> activarServidor(int id)
         {
             Respuesta<Servidor> respuesta;
             string mensaje;
@@ -274,7 +277,7 @@ namespace API_CredentialManager.Controllers
 
         // Desactivar un servidor
         [HttpPut("DesactivarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> DesactivarServidor(int id)
+        public async Task<ActionResult<Respuesta<Servidor>>> desactivarServidor(int id)
         {
             Respuesta<Servidor> respuesta;
             string mensaje;
