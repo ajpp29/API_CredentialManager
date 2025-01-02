@@ -461,7 +461,7 @@ namespace API_CredentialManager.Controllers
         }
 
         //Actualizar credencial
-        [HttpPut("ActualizarCredencial")]
+        [HttpPut("ActualizarCredencialClave")]
         public async Task<ActionResult<Respuesta<CredencialConClave>>> actualizarCredencial(CrearCredencial credencial)
         {
             Respuesta<CredencialConClave> respuesta;
