@@ -9,7 +9,7 @@ namespace API_CredentialManager.Models
         private int _id;
         private int _usuarioID;
         private int _servidorID;
-        private string _nombre;
+        private string _descripcion;
         private string _credencialUsuario;
         private DateTime _fechaCreacion;
         private string _usuarioModificacion;
@@ -18,8 +18,7 @@ namespace API_CredentialManager.Models
 
         public Credencial()
         {
-            _nombre = string.Empty;
-            _credencialUsuario = string.Empty;
+            _descripcion = string.Empty;
             _fechaCreacion = System.DateTime.Now;
             _usuarioModificacion = string.Empty;
             _fechaModificacion = System.DateTime.Now;
@@ -50,11 +49,11 @@ namespace API_CredentialManager.Models
             set { _servidorID = value; }
         }
 
-        [Column("CredencialNombre")]
-        public string Nombre
+        [Column("CredencialDescripcion")]
+        public string Descripcion
         {
-            get { return _nombre; }
-            set { _nombre = value; }
+            get { return _descripcion; }
+            set { _descripcion = value; }
         }
 
         [Column("CredencialUsuario")]

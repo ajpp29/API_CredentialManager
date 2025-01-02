@@ -10,13 +10,14 @@ namespace API_CredentialManager.Models
         private int _credencialID;
         private string _credencialClave;
         private string _usuarioModificacion;
-        private DateTime _fechaModificacion;
+        private DateTime _fechaCreacion;
+        private DateTime _fechaEncripcion;
 
         public CredencialHistorial()
         {
-            _credencialClave = string.Empty;
             _usuarioModificacion = string.Empty;
-            _fechaModificacion = System.DateTime.Now;
+            _fechaCreacion = System.DateTime.Now;
+            _fechaEncripcion = System.DateTime.Now;
         }
 
         [Key]
@@ -49,11 +50,18 @@ namespace API_CredentialManager.Models
             set { _usuarioModificacion = value; }
         }
 
-        [Column("Fec_Modificacion")]
-        public DateTime FechaModificacion
+        [Column("Fec_Creacion")]
+        public DateTime FechaCreacion
         {
-            get { return _fechaModificacion; }
-            set { _fechaModificacion = value; }
+            get { return _fechaCreacion; }
+            set { _fechaCreacion = value; }
+        }
+
+        [Column("Fec_Encripcion")]
+        public DateTime FechaEncripcion
+        {
+            get { return _fechaEncripcion; }
+            set { _fechaEncripcion = value; }
         }
     }
 }
