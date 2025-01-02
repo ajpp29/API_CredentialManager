@@ -12,5 +12,7 @@ namespace API_CredentialManager.Data
 
         public DbSet<Servidor> Servidores { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Credencial> Credenciales { get; set; }
+        public DbSet<CredencialHistorial> CredencialHistoriales { get; set; }
     }
 }
