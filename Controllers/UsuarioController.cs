@@ -150,7 +150,7 @@ namespace API_CredentialManager.Controllers
             Respuesta<Usuario> respuesta;
             string mensaje;
             int codigo;
-            string _usuarioModificacion = "UsuarioPrueba";
+            string _usuarioModificacion = "API";
 
             try
             {
@@ -224,7 +224,7 @@ namespace API_CredentialManager.Controllers
             Respuesta<Usuario> respuesta;
             string mensaje;
             int codigo;
-            string _usuarioModificacion = "UsuarioPrueba";
+            string _usuarioModificacion = "API";
 
             try
             {
@@ -313,7 +313,7 @@ namespace API_CredentialManager.Controllers
             Respuesta<Usuario> respuesta;
             string mensaje;
             int codigo;
-            string _usuarioModificacion = "UsuarioPrueba";
+            string _usuarioModificacion = "API";
 
             try
             {
@@ -361,7 +361,7 @@ namespace API_CredentialManager.Controllers
             Respuesta<Usuario> respuesta;
             string mensaje;
             int codigo;
-            string _usuarioModificacion = "UsuarioPrueba";
+            string _usuarioModificacion = "API";
 
             try
             {
