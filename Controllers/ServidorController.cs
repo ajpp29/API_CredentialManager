@@ -262,7 +262,7 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Servidor activado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje, servidor);
+                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje);
                 }
             }
             catch (Exception e)
@@ -307,7 +307,7 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Servidor desactivado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje, servidor);
+                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje);
                 }
             }
             catch (Exception e)
