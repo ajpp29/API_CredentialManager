@@ -531,5 +531,91 @@ namespace API_CredentialManager.Controllers
 
             return respuesta;
         }
+
+        //Activar credencial
+        [HttpPut("ActivarCredencial/{credencialID}")]
+        public async Task<ActionResult<Respuesta<CredencialConClave>>> activarCredencial(int credencialID)
+        {
+            Respuesta<CredencialConClave> respuesta;
+            string mensaje;
+            int codigo;
+            string _usuarioModificacion = "API";
+
+            try
+            {
+                var credencial = await _context.Credenciales
+                                                .Where(c => c.ID == credencialID)
+                                                .FirstOrDefaultAsync();
+                if (credencial != null)
+                {
+                    credencial.Activo = true;
+                    credencial.UsuarioModificacion = _usuarioModificacion;
+                    credencial.FechaModificacion = DateTime.Now;
+                    _context.Credenciales.Update(credencial);
+                    await _context.SaveChangesAsync();
+
+                    mensaje = "Credencial activada";
+                    codigo = StatusCodes.Status200OK;
+                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje);
+                }
+                else
+                {
+                    mensaje = "No se encontró la credencial";
+                    codigo = StatusCodes.Status404NotFound;
+                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                }
+            }
+            catch (Exception e)
+            {
+                mensaje = e.Message;
+                codigo = StatusCodes.Status500InternalServerError;
+                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+            }
+
+            return respuesta;
+        }
+
+        //Desactivar credencial
+        [HttpPut("DesactivarCredencial/{credencialID}")]
+        public async Task<ActionResult<Respuesta<CredencialConClave>>> desactivarCredencial(int credencialID)
+        {
+            Respuesta<CredencialConClave> respuesta;
+            string mensaje;
+            int codigo;
+            string _usuarioModificacion = "API";
+
+            try
+            {
+                var credencial = await _context.Credenciales
+                                                .Where(c => c.ID == credencialID)
+                                                .FirstOrDefaultAsync();
+                if (credencial != null)
+                {
+                    credencial.Activo = false;
+                    credencial.UsuarioModificacion = _usuarioModificacion;
+                    credencial.FechaModificacion = DateTime.Now;
+                    _context.Credenciales.Update(credencial);
+                    await _context.SaveChangesAsync();
+
+                    mensaje = "Credencial desactivada";
+                    codigo = StatusCodes.Status200OK;
+                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje);
+                }
+                else
+                {
+                    mensaje = "No se encontró la credencial";
+                    codigo = StatusCodes.Status404NotFound;
+                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                }
+            }
+            catch (Exception e)
+            {
+                mensaje = e.Message;
+                codigo = StatusCodes.Status500InternalServerError;
+                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+            }
+
+            return respuesta;
+        }
     }
 }
