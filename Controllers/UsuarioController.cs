@@ -335,7 +335,7 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Usuario activado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje);
                 }
                 else
                 {
@@ -383,7 +383,7 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Usuario desactivado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje, usuario);
+                    respuesta = new Respuesta<Usuario>(codigo, true, mensaje);
                 }
                 else
                 {
