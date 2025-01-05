@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace API_CredentialManager.Models
 {
     [Table("CREDENCIAL", Schema = "dbo")]
-    public class Credencial
+    public class t_Credencial
     {
         private int _id;
         private int _usuarioID;
@@ -16,7 +16,7 @@ namespace API_CredentialManager.Models
         private DateTime _fechaModificacion;
         private bool _activo;
 
-        public Credencial()
+        public t_Credencial()
         {
             _descripcion = string.Empty;
             _fechaCreacion = System.DateTime.Now;

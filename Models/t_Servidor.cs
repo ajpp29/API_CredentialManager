@@ -6,7 +6,7 @@ namespace API_CredentialManager.Models
 {
     [Table("SERVIDOR", Schema = "dbo")]
     //[PrimaryKey(nameof(ID))]
-    public class Servidor
+    public class t_Servidor
     {
         private int _id;
         private string _nombre;
@@ -16,7 +16,7 @@ namespace API_CredentialManager.Models
         private DateTime _fechaModificacion;
         private bool _activo;
 
-        public Servidor()
+        public t_Servidor()
         {
             _fechaCreacion = System.DateTime.Now;
             _fechaModificacion = System.DateTime.Now;

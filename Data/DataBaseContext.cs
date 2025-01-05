@@ -10,9 +10,9 @@ namespace API_CredentialManager.Data
         // Agregar DbSet para cada tabla
         // public DbSet<Estudiante> Estudiantes { get; set; }
 
-        public DbSet<Servidor> Servidores { get; set; }
-        public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Credencial> Credenciales { get; set; }
-        public DbSet<CredencialHistorial> CredencialHistoriales { get; set; }
+        public DbSet<t_Servidor> Servidores { get; set; }
+        public DbSet<t_Usuario> Usuarios { get; set; }
+        public DbSet<t_Credencial> Credenciales { get; set; }
+        public DbSet<t_CredencialHistorial> CredencialHistoriales { get; set; }
     }
 }

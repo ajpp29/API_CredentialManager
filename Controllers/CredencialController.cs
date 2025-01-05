@@ -7,35 +7,37 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_CredentialManager.Controllers
 {
-    public struct HistorialClaves
+    public struct _historialClaves
     {
         public string CredencialClave { get; set; }
         public DateTime FechaCreacionClave { get; set; }
     }
 
-    public struct CredencialConHistorialClaves
+    public struct _credencialConHistorialClaves
     {
         public int ID { get; set; }
         public string UsuarioNombre { get; set; }
         public string ServidorNombre { get; set; }
         public string CredencialDescripcion { get; set; }
+        public bool Activo { get; set; }
         public string CredencialUsuario { get; set; }
-        public List<HistorialClaves> CredencialClaves { get; set; }
+        public List<_historialClaves> CredencialClaves { get; set; }
     }
 
-    public struct CredencialConClave
+    public struct _credencialConClave
     {
         public int ID { get; set; }
         public string UsuarioNombre { get; set; }
         public string ServidorNombre { get; set; }
         public string CredencialDescripcion { get; set; }
+        public bool Activo { get; set; }
         public string CredencialUsuario { get; set; }
         public string CredencialClave { get; set; }
         public DateTime FechaCreacionClave { get; set; }
         public DateTime FechaEncripcionClave { get; set; }
     }
 
-    public struct CrearCredencial
+    public struct _credencialNueva
     {
         public int UsuarioID { get; set; }
         public int ServidorID { get; set; }
@@ -43,7 +45,7 @@ namespace API_CredentialManager.Controllers
         public string CredencialUsuario { get; set; }
         public string CredencialClave { get; set; }
 
-        public CrearCredencial()
+        public _credencialNueva()
         {
             CredencialDescripcion = string.Empty;
         }
@@ -62,9 +64,9 @@ namespace API_CredentialManager.Controllers
 
         // Obtener todas las credenciales con historial de claves por usuario
         [HttpGet("ObtenerCredencialesHistorialPorUsuario/{usuarioID}")]
-        public async Task<ActionResult<Respuesta<List<CredencialConHistorialClaves>>>> obtenerCredencialesUsuario(int usuarioID)
+        public async Task<ActionResult<Respuesta<List<_credencialConHistorialClaves>>>> obtenerCredencialesUsuario(int usuarioID)
         {
-            Respuesta<List<CredencialConHistorialClaves>> respuesta;
+            Respuesta<List<_credencialConHistorialClaves>> respuesta;
             string mensaje;
             int codigo;
             AESCryptoService _encripcion;
@@ -76,11 +78,11 @@ namespace API_CredentialManager.Controllers
                                                 .ToListAsync();
                 if (credenciales.Any())
                 {
-                    List<CredencialConHistorialClaves> credencialConHistorial = new List<CredencialConHistorialClaves>();
+                    List<_credencialConHistorialClaves> credencialConHistorial = new List<_credencialConHistorialClaves>();
 
                     foreach (var c in credenciales)
                     {
-                        List<HistorialClaves> claves = new List<HistorialClaves>();
+                        List<_historialClaves> claves = new List<_historialClaves>();
 
                         var usuario = await _context.Usuarios
                                                 .Where(u => u.ID == c.UsuarioID)
@@ -100,7 +102,7 @@ namespace API_CredentialManager.Controllers
                         foreach (var clave in credencialHistorial)
                         {
                             claves.Add(
-                                new HistorialClaves
+                                new _historialClaves
                                 {
                                     CredencialClave = _encripcion.Decrypt(clave.CredencialClave),
                                     FechaCreacionClave = clave.FechaCreacion
@@ -110,12 +112,13 @@ namespace API_CredentialManager.Controllers
                         
 
                         credencialConHistorial.Add(
-                            new CredencialConHistorialClaves
+                            new _credencialConHistorialClaves
                             {
                                 ID = c.ID,
                                 UsuarioNombre = usuario.Nombre,
                                 ServidorNombre = servidor.Nombre,
                                 CredencialDescripcion = c.Descripcion,
+                                Activo = c.Activo,
                                 CredencialUsuario = c.CredencialUsuario,
                                 CredencialClaves = claves
                             });
@@ -123,20 +126,20 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credenciales encontradas";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<List<CredencialConHistorialClaves>>(codigo, true, mensaje, credencialConHistorial);
+                    respuesta = new Respuesta<List<_credencialConHistorialClaves>>(codigo, true, mensaje, credencialConHistorial);
                 }
                 else
                 {
                     mensaje = "No se encontraron credencial para el usuario";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<List<CredencialConHistorialClaves>>(codigo, false, mensaje);
+                    respuesta = new Respuesta<List<_credencialConHistorialClaves>>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<List<CredencialConHistorialClaves>>(codigo, false, mensaje);
+                respuesta = new Respuesta<List<_credencialConHistorialClaves>>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -144,9 +147,9 @@ namespace API_CredentialManager.Controllers
 
         //Obtener todas las credenciales por usuario
         [HttpGet("ObtenerCredencialesPorUsuario/{usuarioID}")]
-        public async Task<ActionResult<Respuesta<List<CredencialConClave>>>> obtenerCredencialesPorUsuario(int usuarioID)
+        public async Task<ActionResult<Respuesta<List<_credencialConClave>>>> obtenerCredencialesPorUsuario(int usuarioID)
         {
-            Respuesta<List<CredencialConClave>> respuesta;
+            Respuesta<List<_credencialConClave>> respuesta;
             string mensaje;
             int codigo;
             AESCryptoService _encripcion;
@@ -158,7 +161,7 @@ namespace API_CredentialManager.Controllers
                                                 .ToListAsync();
                 if (credenciales.Any())
                 {
-                    List<CredencialConClave> credencialConClave = new List<CredencialConClave>();
+                    List<_credencialConClave> credencialConClave = new List<_credencialConClave>();
 
                     foreach (var c in credenciales)
                     {
@@ -178,12 +181,13 @@ namespace API_CredentialManager.Controllers
                         _encripcion = new AESCryptoService(usuario.Key);
 
                         credencialConClave.Add(
-                                new CredencialConClave
+                                new _credencialConClave
                                 {
                                     ID = c.ID,
                                     UsuarioNombre = usuario.Nombre,
                                     ServidorNombre = servidor.Nombre,
                                     CredencialDescripcion = c.Descripcion,
+                                    Activo = c.Activo,
                                     CredencialUsuario = c.CredencialUsuario,
                                     CredencialClave = _encripcion.Decrypt(credencial.CredencialClave),
                                     FechaCreacionClave = credencial.FechaCreacion,
@@ -193,20 +197,20 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credenciales encontradas";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<List<CredencialConClave>>(codigo, true, mensaje, credencialConClave);
+                    respuesta = new Respuesta<List<_credencialConClave>>(codigo, true, mensaje, credencialConClave);
                 }
                 else
                 {
                     mensaje = "No se encontraron credencial para el usuario";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<List<CredencialConClave>>(codigo, false, mensaje);
+                    respuesta = new Respuesta<List<_credencialConClave>>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<List<CredencialConClave>>(codigo, false, mensaje);
+                respuesta = new Respuesta<List<_credencialConClave>>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -214,9 +218,9 @@ namespace API_CredentialManager.Controllers
 
         //Obtener credencial con historial de claves por ID
         [HttpGet("ObtenerCredencialHistorial/{credencialID}")]
-        public async Task<ActionResult<Respuesta<CredencialConHistorialClaves>>> obtenerCredencialHistorialPorID(int credencialID)
+        public async Task<ActionResult<Respuesta<_credencialConHistorialClaves>>> obtenerCredencialHistorialPorID(int credencialID)
         {
-            Respuesta<CredencialConHistorialClaves> respuesta;
+            Respuesta<_credencialConHistorialClaves> respuesta;
             string mensaje;
             int codigo;
             AESCryptoService _encripcion;
@@ -228,7 +232,7 @@ namespace API_CredentialManager.Controllers
                                                 .FirstOrDefaultAsync();
                 if (credencial != null)
                 {
-                    List<HistorialClaves> claves = new List<HistorialClaves>();
+                    List<_historialClaves> claves = new List<_historialClaves>();
 
                     var usuario = await _context.Usuarios
                                             .Where(u => u.ID == credencial.UsuarioID)
@@ -248,40 +252,41 @@ namespace API_CredentialManager.Controllers
                     foreach (var clave in credencialHistorial)
                     {
                         claves.Add(
-                            new HistorialClaves
+                            new _historialClaves
                             {
                                 CredencialClave = _encripcion.Decrypt(clave.CredencialClave),
                                 FechaCreacionClave = clave.FechaCreacion
                             });
                     }
 
-                    CredencialConHistorialClaves credencialConHistorial =
-                                                 new CredencialConHistorialClaves
+                    _credencialConHistorialClaves credencialConHistorial =
+                                                 new _credencialConHistorialClaves
                                                  {
                                                      ID = credencial.ID,
                                                      UsuarioNombre = usuario.Nombre,
                                                      ServidorNombre = servidor.Nombre,
                                                      CredencialDescripcion = credencial.Descripcion,
+                                                     Activo = credencial.Activo,
                                                      CredencialUsuario = credencial.CredencialUsuario,
                                                      CredencialClaves = claves
                                                  };
 
                     mensaje = "Credencial encontrada";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<CredencialConHistorialClaves>(codigo, true, mensaje, credencialConHistorial);
+                    respuesta = new Respuesta<_credencialConHistorialClaves>(codigo, true, mensaje, credencialConHistorial);
                 }
                 else
                 {
                     mensaje = "No se encontró la credencial";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<CredencialConHistorialClaves>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConHistorialClaves>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConHistorialClaves>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConHistorialClaves>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -289,9 +294,9 @@ namespace API_CredentialManager.Controllers
 
         //Obtener credencial por ID
         [HttpGet("ObtenerCredencial/{credencialID}")]
-        public async Task<ActionResult<Respuesta<CredencialConClave>>> obtenerCredencialPorID(int credencialID)
+        public async Task<ActionResult<Respuesta<_credencialConClave>>> obtenerCredencialPorID(int credencialID)
         {
-            Respuesta<CredencialConClave> respuesta;
+            Respuesta<_credencialConClave> respuesta;
             string mensaje;
             int codigo;
             AESCryptoService _encripcion;
@@ -318,13 +323,14 @@ namespace API_CredentialManager.Controllers
 
                     _encripcion = new AESCryptoService(usuario.Key);
 
-                    CredencialConClave credencialConClave =
-                                                 new CredencialConClave
+                    _credencialConClave credencialConClave =
+                                                 new _credencialConClave
                                                  {
                                                      ID = credencial.ID,
                                                      UsuarioNombre = usuario.Nombre,
                                                      ServidorNombre = servidor.Nombre,
                                                      CredencialDescripcion = credencial.Descripcion,
+                                                     Activo = credencial.Activo,
                                                      CredencialUsuario = credencial.CredencialUsuario,
                                                      CredencialClave = _encripcion.Decrypt(credencialHistorial.CredencialClave),
                                                      FechaCreacionClave = credencialHistorial.FechaCreacion,
@@ -333,20 +339,20 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credencial encontrada";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje, credencialConClave);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, true, mensaje, credencialConClave);
                 }
                 else
                 {
                     mensaje = "No se encontró la credencial";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -354,9 +360,9 @@ namespace API_CredentialManager.Controllers
 
         //Agregar credencial
         [HttpPost("AgregarCredencial")]
-        public async Task<ActionResult<Respuesta<CredencialConClave>>> agregarCredencial(CrearCredencial credencial)
+        public async Task<ActionResult<Respuesta<_credencialConClave>>> agregarCredencial(_credencialNueva credencial)
         {
-            Respuesta<CredencialConClave> respuesta;
+            Respuesta<_credencialConClave> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -371,7 +377,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "La credencial ya existe";
                     codigo = StatusCodes.Status400BadRequest;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                     return respuesta;
                 }
                 else
@@ -388,28 +394,28 @@ namespace API_CredentialManager.Controllers
                     {
                         mensaje = "Usuario y servidor no existen";
                         codigo = StatusCodes.Status400BadRequest;
-                        respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                        respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                         return respuesta;
                     }
                     else if (usuarioExiste == null)
                     {
                         mensaje = "Usuario no existe";
                         codigo = StatusCodes.Status400BadRequest;
-                        respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                        respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                         return respuesta;
                     }
                     else if (servidorExiste == null)
                     {
                         mensaje = "Servidor no existe";
                         codigo = StatusCodes.Status400BadRequest;
-                        respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                        respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                         return respuesta;
                     }
                     else
                     {
                         _encripcion = new AESCryptoService(usuarioExiste.Key);
 
-                        Credencial nuevaCredencial = new Credencial
+                        t_Credencial nuevaCredencial = new t_Credencial
                         {
                             UsuarioID = credencial.UsuarioID,
                             ServidorID = credencial.ServidorID,
@@ -421,7 +427,7 @@ namespace API_CredentialManager.Controllers
                         _context.Credenciales.Add(nuevaCredencial);
                         await _context.SaveChangesAsync();
 
-                        CredencialHistorial credencialHistorial = new CredencialHistorial
+                        t_CredencialHistorial credencialHistorial = new t_CredencialHistorial
                         {
                             CredencialID = nuevaCredencial.ID,
                             CredencialClave = _encripcion.Encrypt(credencial.CredencialClave),
@@ -431,13 +437,14 @@ namespace API_CredentialManager.Controllers
                         _context.CredencialHistoriales.Add(credencialHistorial);
                         await _context.SaveChangesAsync();
 
-                        CredencialConClave credencialConClave =
-                                                     new CredencialConClave
+                        _credencialConClave credencialConClave =
+                                                     new _credencialConClave
                                                      {
                                                          ID = nuevaCredencial.ID,
                                                          UsuarioNombre = usuarioExiste.Nombre,
                                                          ServidorNombre = servidorExiste.Nombre,
                                                          CredencialDescripcion = nuevaCredencial.Descripcion,
+                                                         Activo = nuevaCredencial.Activo,
                                                          CredencialUsuario = nuevaCredencial.CredencialUsuario,
                                                          CredencialClave = credencial.CredencialClave,
                                                          FechaCreacionClave = credencialHistorial.FechaCreacion,
@@ -446,7 +453,7 @@ namespace API_CredentialManager.Controllers
 
                         mensaje = "Credencial agregada";
                         codigo = StatusCodes.Status201Created;
-                        respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje, credencialConClave);
+                        respuesta = new Respuesta<_credencialConClave>(codigo, true, mensaje, credencialConClave);
                     }
                 }
             }
@@ -454,7 +461,7 @@ namespace API_CredentialManager.Controllers
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -462,9 +469,9 @@ namespace API_CredentialManager.Controllers
 
         //Actualizar credencial
         [HttpPut("ActualizarCredencialClave")]
-        public async Task<ActionResult<Respuesta<CredencialConClave>>> actualizarCredencial(CrearCredencial credencial)
+        public async Task<ActionResult<Respuesta<_credencialConClave>>> actualizarCredencial(_credencialNueva credencial)
         {
-            Respuesta<CredencialConClave> respuesta;
+            Respuesta<_credencialConClave> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -479,7 +486,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "La credencial no existe";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                     return respuesta;
                 }
                 else
@@ -494,7 +501,7 @@ namespace API_CredentialManager.Controllers
 
                     _encripcion = new AESCryptoService(usuarioExiste.Key);
 
-                    CredencialHistorial credencialHistorial = new CredencialHistorial
+                    t_CredencialHistorial credencialHistorial = new t_CredencialHistorial
                     {
                         CredencialID = credencialExiste.ID,
                         CredencialClave = _encripcion.Encrypt(credencial.CredencialClave),
@@ -504,13 +511,14 @@ namespace API_CredentialManager.Controllers
                     _context.CredencialHistoriales.Add(credencialHistorial);
                     await _context.SaveChangesAsync();
 
-                    CredencialConClave credencialConClave =
-                                                 new CredencialConClave
+                    _credencialConClave credencialConClave =
+                                                 new _credencialConClave
                                                  {
                                                      ID = credencialExiste.ID,
                                                      UsuarioNombre = usuarioExiste.Nombre,
                                                      ServidorNombre = servidorExiste.Nombre,
                                                      CredencialDescripcion = credencialExiste.Descripcion,
+                                                     Activo = credencialExiste.Activo,
                                                      CredencialUsuario = credencialExiste.CredencialUsuario,
                                                      CredencialClave = credencial.CredencialClave,
                                                      FechaCreacionClave = credencialHistorial.FechaCreacion,
@@ -519,14 +527,14 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credencial actualizada";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje, credencialConClave);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, true, mensaje, credencialConClave);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -534,9 +542,9 @@ namespace API_CredentialManager.Controllers
 
         //Activar credencial
         [HttpPut("ActivarCredencial/{credencialID}")]
-        public async Task<ActionResult<Respuesta<CredencialConClave>>> activarCredencial(int credencialID)
+        public async Task<ActionResult<Respuesta<_credencialConClave>>> activarCredencial(int credencialID)
         {
-            Respuesta<CredencialConClave> respuesta;
+            Respuesta<_credencialConClave> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -556,20 +564,20 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credencial activada";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, true, mensaje);
                 }
                 else
                 {
                     mensaje = "No se encontró la credencial";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -577,9 +585,9 @@ namespace API_CredentialManager.Controllers
 
         //Desactivar credencial
         [HttpPut("DesactivarCredencial/{credencialID}")]
-        public async Task<ActionResult<Respuesta<CredencialConClave>>> desactivarCredencial(int credencialID)
+        public async Task<ActionResult<Respuesta<_credencialConClave>>> desactivarCredencial(int credencialID)
         {
-            Respuesta<CredencialConClave> respuesta;
+            Respuesta<_credencialConClave> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -599,20 +607,20 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Credencial desactivada";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, true, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, true, mensaje);
                 }
                 else
                 {
                     mensaje = "No se encontró la credencial";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<CredencialConClave>(codigo, false, mensaje);
+                respuesta = new Respuesta<_credencialConClave>(codigo, false, mensaje);
             }
 
             return respuesta;

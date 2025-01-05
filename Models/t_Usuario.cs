@@ -6,7 +6,7 @@ using System.Text;
 namespace API_CredentialManager.Models
 {
     [Table("USUARIO", Schema = "dbo")]
-    public class Usuario
+    public class t_Usuario
     {
         private int _id;
         private string _nombre;
@@ -18,7 +18,7 @@ namespace API_CredentialManager.Models
         private DateTime _fechaModificacion;
         private bool _activo;
 
-        public Usuario()
+        public t_Usuario()
         {
             _clave = string.Empty;
             _key = string.Empty;
@@ -119,7 +119,7 @@ namespace API_CredentialManager.Models
             const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             StringBuilder resultado = new StringBuilder(longitud);
 
-            using (var rng = new RNGCryptoServiceProvider())
+            using (var rng = RandomNumberGenerator.Create())
             {
                 byte[] buffer = new byte[1];
 

@@ -9,6 +9,14 @@ using System.Runtime.InteropServices;
 
 namespace API_CredentialManager.Controllers
 {
+    public struct _servidor
+    {
+        public int ID { get; set; }
+        public string Nombre { get; set; }
+        public string IP { get; set; }
+        public bool Activo { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class ServidorController : ControllerBase
@@ -22,9 +30,9 @@ namespace API_CredentialManager.Controllers
 
         // Obtener todos los servidores
         [HttpGet("ObtenerServidores")]
-        public async Task<ActionResult<Respuesta<List<Servidor>>>> obtenerServidores()
+        public async Task<ActionResult<Respuesta<List<_servidor>>>> obtenerServidores()
         {
-            Respuesta<List<Servidor>> respuesta;
+            Respuesta<List<_servidor>> respuesta;
             string mensaje;
             int codigo;
 
@@ -34,22 +42,35 @@ namespace API_CredentialManager.Controllers
 
                 if (Servidores.Any())
                 {
+                    List<_servidor> listaServidores = new List<_servidor>();
+
+                    foreach (var servidor in Servidores)
+                    {
+                        listaServidores.Add(new _servidor
+                        {
+                            ID = servidor.ID,
+                            Nombre = servidor.Nombre,
+                            IP = servidor.IP,
+                            Activo = servidor.Activo
+                        });
+                    }
+
                     mensaje = "Se encontraron servidores";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<List<Servidor>>(codigo, true, mensaje, Servidores);
+                    respuesta = new Respuesta<List<_servidor>>(codigo, true, mensaje, listaServidores);
                 }
                 else
                 {
                     mensaje = "No se encontraron servidores";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<List<Servidor>>(codigo, false, mensaje);
+                    respuesta = new Respuesta<List<_servidor>>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<List<Servidor>>(codigo, false, mensaje);
+                respuesta = new Respuesta<List<_servidor>>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -57,9 +78,9 @@ namespace API_CredentialManager.Controllers
 
         // Obtener todos los servidores activos
         [HttpGet("ObtenerServidoresActivos")]
-        public async Task<ActionResult<Respuesta<List<Servidor>>>> obtenerServidoresActivos()
+        public async Task<ActionResult<Respuesta<List<_servidor>>>> obtenerServidoresActivos()
         {
-            Respuesta<List<Servidor>> respuesta;
+            Respuesta<List<_servidor>> respuesta;
             string mensaje;
             int codigo;
 
@@ -71,22 +92,35 @@ namespace API_CredentialManager.Controllers
 
                 if (Servidores.Any())
                 {
+                    List<_servidor> listaServidores = new List<_servidor>();
+
+                    foreach (var servidor in Servidores)
+                    {
+                        listaServidores.Add(new _servidor
+                        {
+                            ID = servidor.ID,
+                            Nombre = servidor.Nombre,
+                            IP = servidor.IP,
+                            Activo = servidor.Activo
+                        });
+                    }
+
                     mensaje = "Se encontraron servidores activos";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<List<Servidor>>(codigo, true, mensaje, Servidores);
+                    respuesta = new Respuesta<List<_servidor>>(codigo, true, mensaje, listaServidores);
                 }
                 else
                 {
                     mensaje = "No se encontraron servidores activos";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<List<Servidor>>(codigo, false, mensaje);
+                    respuesta = new Respuesta<List<_servidor>>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<List<Servidor>>(codigo, false, mensaje);
+                respuesta = new Respuesta<List<_servidor>>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -94,9 +128,9 @@ namespace API_CredentialManager.Controllers
 
         // Obtener un servidor por ID
         [HttpGet("ObtenerServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> obtenerServidor(int id)
+        public async Task<ActionResult<Respuesta<_servidor>>> obtenerServidor(int id)
         {
-            Respuesta<Servidor> respuesta;
+            Respuesta<_servidor> respuesta;
             string mensaje;
             int codigo;
 
@@ -108,22 +142,30 @@ namespace API_CredentialManager.Controllers
 
                 if (Servidor != null)
                 {
+                    var _servidor = new _servidor
+                    {
+                        ID = Servidor.ID,
+                        Nombre = Servidor.Nombre,
+                        IP = Servidor.IP,
+                        Activo = Servidor.Activo
+                    };
+
                     mensaje = "Se encontró el servidor";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje, Servidor);
+                    respuesta = new Respuesta<_servidor>(codigo, true, mensaje, _servidor);
                 }
                 else
                 {
                     mensaje = "No se encontró el servidor";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -131,9 +173,9 @@ namespace API_CredentialManager.Controllers
 
         // Crear un servidor
         [HttpPost("CrearServidor")]
-        public async Task<ActionResult<Respuesta<Servidor>>> crearServidor(Servidor servidor)
+        public async Task<ActionResult<Respuesta<_servidor>>> crearServidor(t_Servidor servidor)
         {
-            Respuesta<Servidor> respuesta;
+            Respuesta<_servidor> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -149,7 +191,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "El servidor ya existe";
                     codigo = StatusCodes.Status400BadRequest;
-                    respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                 }
                 else
                 {
@@ -158,9 +200,17 @@ namespace API_CredentialManager.Controllers
                     _context.Servidores.Add(servidor);
                     await _context.SaveChangesAsync();
 
+                    var _servidor = new _servidor
+                    {
+                        ID = servidor.ID,
+                        Nombre = servidor.Nombre,
+                        IP = servidor.IP,
+                        Activo = servidor.Activo
+                    };
+
                     mensaje = "Servidor creado";
                     codigo = StatusCodes.Status201Created;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje, servidor);
+                    respuesta = new Respuesta<_servidor>(codigo, true, mensaje, _servidor);
 
 
                 }
@@ -169,7 +219,7 @@ namespace API_CredentialManager.Controllers
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -177,9 +227,9 @@ namespace API_CredentialManager.Controllers
 
         // Actualizar un servidor
         [HttpPut("ActualizarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> actualizarServidor(int id, Servidor servidor)
+        public async Task<ActionResult<Respuesta<_servidor>>> actualizarServidor(int id, t_Servidor servidor)
         {
-            Respuesta<Servidor> respuesta;
+            Respuesta<_servidor> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -190,7 +240,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "El ID no coincide con el servidor";
                     codigo = StatusCodes.Status400BadRequest;
-                    respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                 }
                 else
                 {
@@ -202,7 +252,7 @@ namespace API_CredentialManager.Controllers
                     {
                         mensaje = "El servidor no existe";
                         codigo = StatusCodes.Status404NotFound;
-                        respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                        respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                     }
                     else
                     {
@@ -214,9 +264,17 @@ namespace API_CredentialManager.Controllers
                         _context.Servidores.Update(existeServidor);
                         await _context.SaveChangesAsync();
 
+                        var _servidor = new _servidor
+                        {
+                            ID = existeServidor.ID,
+                            Nombre = existeServidor.Nombre,
+                            IP = existeServidor.IP,
+                            Activo = existeServidor.Activo
+                        };
+
                         mensaje = "Servidor actualizado";
                         codigo = StatusCodes.Status200OK;
-                        respuesta = new Respuesta<Servidor>(codigo, true, mensaje, existeServidor);
+                        respuesta = new Respuesta<_servidor>(codigo, true, mensaje, _servidor);
                     }
                 }
             }
@@ -224,7 +282,7 @@ namespace API_CredentialManager.Controllers
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -232,9 +290,9 @@ namespace API_CredentialManager.Controllers
 
         // Activar un servidor
         [HttpPut("ActivarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> activarServidor(int id)
+        public async Task<ActionResult<Respuesta<_servidor>>> activarServidor(int id)
         {
-            Respuesta<Servidor> respuesta;
+            Respuesta<_servidor> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -249,7 +307,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "El servidor no existe";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                 }
                 else
                 {
@@ -262,14 +320,14 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Servidor activado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, true, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
             }
 
             return respuesta;
@@ -277,9 +335,9 @@ namespace API_CredentialManager.Controllers
 
         // Desactivar un servidor
         [HttpPut("DesactivarServidor/{id}")]
-        public async Task<ActionResult<Respuesta<Servidor>>> desactivarServidor(int id)
+        public async Task<ActionResult<Respuesta<_servidor>>> desactivarServidor(int id)
         {
-            Respuesta<Servidor> respuesta;
+            Respuesta<_servidor> respuesta;
             string mensaje;
             int codigo;
             string _usuarioModificacion = "API";
@@ -294,7 +352,7 @@ namespace API_CredentialManager.Controllers
                 {
                     mensaje = "El servidor no existe";
                     codigo = StatusCodes.Status404NotFound;
-                    respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
                 }
                 else
                 {
@@ -307,14 +365,14 @@ namespace API_CredentialManager.Controllers
 
                     mensaje = "Servidor desactivado";
                     codigo = StatusCodes.Status200OK;
-                    respuesta = new Respuesta<Servidor>(codigo, true, mensaje);
+                    respuesta = new Respuesta<_servidor>(codigo, true, mensaje);
                 }
             }
             catch (Exception e)
             {
                 mensaje = e.Message;
                 codigo = StatusCodes.Status500InternalServerError;
-                respuesta = new Respuesta<Servidor>(codigo, false, mensaje);
+                respuesta = new Respuesta<_servidor>(codigo, false, mensaje);
             }
 
             return respuesta;
